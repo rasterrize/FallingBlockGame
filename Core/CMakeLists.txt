@@ -3,8 +3,9 @@ project(fbg-core VERSION 0.1.0 LANGUAGES CXX)
 
 add_library(${PROJECT_NAME} STATIC src/GameWindow.h src/GameWindow.cpp)
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 
+# Include source directory so fbg-game doesn't need to
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 
 # This project uses CPM (CMake Package Manager)

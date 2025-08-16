@@ -1,10 +1,8 @@
-#include <iostream>
+#include "Game.h"
 
-#include "GameWindow.h"
-
+// TODO: launch parameters (window size, etc)
 int main()
 {
-    std::cout << "Hello, from fallingblockgame!\n";
-
-    fbg::GameWindow window;
+    fbg::Game game;
+    game.Run();
 }
