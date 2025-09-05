@@ -38,6 +38,8 @@ namespace fbg
 
         m_BoardTexture = pxl::Texture::Create(boardImage, textureSpecs);
         m_GridTexture = pxl::Texture::Create(gridImage, textureSpecs);
+
+        block = std::make_unique<TBlock>(glm::vec3(k_BlockBoardOrigin.x + k_UnitSize * 4.0f, k_BlockBoardOrigin.y + k_UnitSize * 6.0f, 0.2f));
     }
 
     Game::~Game()
@@ -68,39 +70,8 @@ namespace fbg
         pxl::Renderer::AddQuad(board);
         pxl::Renderer::AddQuad(grid);
 
-        // Falling Block
-        pxl::Quad left = {
-            .Position = { k_BlockBoardOrigin.x, k_BlockBoardOrigin.y, 0.2f },
-            .Size = glm::vec2(35),
-            .Colour = pxl::Colour::AsVec4(pxl::ColourName::Pink),
-            .Origin = pxl::Origin2D::BottomLeft,
-        };
-
-        pxl::Quad middle = {
-            .Position = { k_BlockBoardOrigin.x + k_BlockSize, k_BlockBoardOrigin.y, 0.2f },
-            .Size = glm::vec2(35),
-            .Colour = pxl::Colour::AsVec4(pxl::ColourName::Pink),
-            .Origin = pxl::Origin2D::BottomLeft,
-        };
-
-        pxl::Quad right = {
-            .Position = { k_BlockBoardOrigin.x + k_BlockSize * 2, k_BlockBoardOrigin.y, 0.2f },
-            .Size = glm::vec2(35),
-            .Colour = pxl::Colour::AsVec4(pxl::ColourName::Pink),
-            .Origin = pxl::Origin2D::BottomLeft,
-        };
-
-        pxl::Quad top = {
-            .Position = { k_BlockBoardOrigin.x + k_BlockSize, k_BlockBoardOrigin.y + k_BlockSize, 0.2f },
-            .Size = glm::vec2(35),
-            .Colour = pxl::Colour::AsVec4(pxl::ColourName::Pink),
-            .Origin = pxl::Origin2D::BottomLeft,
-        };
-
-        pxl::Renderer::AddQuad(left);
-        pxl::Renderer::AddQuad(middle);
-        pxl::Renderer::AddQuad(right);
-        pxl::Renderer::AddQuad(top);
+        // Draw blocks
+        block->Draw();
     }
 
     void Game::OnGUIRender()
