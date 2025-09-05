@@ -48,6 +48,20 @@ namespace fbg
 
     void Game::OnUpdate(float dt)
     {
+        m_ElapsedTime += dt;
+
+        if (m_ElapsedTime > m_FallTime)
+        {
+            // TEMP
+            if (block->GetPosition().y - k_UnitSize < k_BoardBottomY)
+            {
+                m_ElapsedTime = 0.0f;
+                return;
+            }
+
+            block->Translate({ 0.0f, -k_UnitSize, 0.0f });
+            m_ElapsedTime = 0.0f;
+        }
     }
 
     void Game::OnRender()
