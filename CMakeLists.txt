@@ -1,7 +1,19 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(fbg VERSION 0.1.0 LANGUAGES CXX)
 
-add_executable(${PROJECT_NAME} src/main.cpp src/Game.h src/Game.cpp src/Block.h src/Block.cpp src/TBlock.h)
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+    src/Game.h
+    src/Game.cpp
+    src/Block.h
+    src/Block.cpp
+    src/TBlock.h
+    src/IBlock.h
+    src/ZBlock.h
+    src/Segment.h
+    src/Segment.cpp
+    src/Blocks.h
+)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
