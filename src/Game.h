@@ -34,15 +34,15 @@ namespace fbg
 
         const float k_UnitSize = 35.0f;
         const glm::vec2 k_BlockBoardOrigin = { 337.0f, 34.0f };
-        const float k_BoardBottomY = 34.0f;
+        const float k_DefaultFallTime = 0.4f;
 
-        std::array<std::array<std::optional<Segment>, 20>, 10> m_Grid;
+        std::array<std::array<std::optional<Segment>, 10>, 20> m_PlacedSegs;
 
         // Time it takes for a block to fall to the next line
-        float m_FallTime = 0.4f;
+        float m_FallTime = k_DefaultFallTime;
         float m_ElapsedTime = 0.0f;
 
-        // TEMP
         std::unique_ptr<Block> playerBlock;
+        std::unique_ptr<Block> hologramBlock;
     };
 }

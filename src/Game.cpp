@@ -55,6 +55,7 @@ namespace fbg
     {
         m_ElapsedTime += dt;
 
+        // Move block left
         if (pxl::Input::IsKeyPressed(pxl::KeyCode::PXL_KEY_A))
         {
             int validations = 0;
@@ -70,6 +71,7 @@ namespace fbg
                 playerBlock->MoveLeft();
         }
 
+        // Move block right
         if (pxl::Input::IsKeyPressed(pxl::KeyCode::PXL_KEY_D))
         {
             int validations = 0;
@@ -85,21 +87,49 @@ namespace fbg
                 playerBlock->MoveRight();
         }
 
-        if (pxl::Input::IsKeyHeld(pxl::KeyCode::PXL_KEY_S))
+        // Faster soft drop
+        m_FallTime = pxl::Input::IsKeyHeld(pxl::KeyCode::PXL_KEY_S) ? k_DefaultFallTime / 3 : k_DefaultFallTime;
+
+        // Hard drop block
+        if (pxl::Input::IsKeyPressed(pxl::KeyCode::PXL_KEY_SPACE))
         {
-            // TODO: CONSTANT
-            m_FallTime = 0.4f / 3;
-        }
-        else
-        {
-            m_FallTime = 0.4f;
+            bool placedBlock = false;
+            while (!placedBlock)
+            {
+                for (const auto& segment : playerBlock->GetSegments())
+                {
+                    if (!CheckBelowSegment(segment.GetGridPosition()))
+                    {
+                        PlacePlayerBlock();
+                        // TODO: default spawn position constant
+                        if (!SpawnNewBlock(4, 18))
+                        {
+                            StartNewGame();
+                        }
+                        placedBlock = true;
+
+                        break;
+                    }
+                }
+
+                if (!placedBlock)
+                    playerBlock->MoveDown();
+            }
         }
 
+        // Hold block
+        if (pxl::Input::IsKeyPressed(pxl::KeyCode::PXL_KEY_LEFT_SHIFT))
+        {
+            SpawnNewBlock(4, 18);
+        }
+
+        // Reset game
         if (pxl::Input::IsKeyPressed(pxl::KeyCode::PXL_KEY_R))
         {
             StartNewGame();
         }
 
+        // Fall block over time
         if (m_ElapsedTime > m_FallTime)
         {
             for (const auto& segment : playerBlock->GetSegments())
@@ -108,12 +138,13 @@ namespace fbg
                 {
                     m_ElapsedTime = 0.0f;
                     PlacePlayerBlock();
+                    // TODO: default spawn position constant
                     if (!SpawnNewBlock(4, 18))
                     {
                         StartNewGame();
                     }
 
-                    return;
+                    break;
                 }
             }
 
@@ -142,20 +173,17 @@ namespace fbg
         pxl::Renderer::AddQuad(board);
         pxl::Renderer::AddQuad(grid);
 
-        pxl::Quad test;
-        test.Position = { k_BlockBoardOrigin, 1.0f };
-
-        pxl::Renderer::AddQuad(test);
-
         // Draw blocks
         playerBlock->Draw();
+        // hologramBlock->Draw();
 
-        for (int row = 0; row < sizeof(m_Grid) / sizeof(m_Grid[0]); row++)
+        // Draw placed blocks
+        for (int row = 0; row < sizeof(m_PlacedSegs) / sizeof(m_PlacedSegs[0]); row++)
         {
-            for (int column = 0; column < sizeof(m_Grid[0]) / sizeof(m_Grid[0][0]); column++)
+            for (int column = 0; column < sizeof(m_PlacedSegs[0]) / sizeof(m_PlacedSegs[0][0]); column++)
             {
-                if (m_Grid[row][column].has_value())
-                    pxl::Renderer::AddQuad(m_Grid[row][column].value().GetDrawQuad());
+                if (m_PlacedSegs[row][column].has_value())
+                    pxl::Renderer::AddQuad(m_PlacedSegs[row][column].value().GetDrawQuad());
             }
         }
     }
@@ -176,23 +204,19 @@ namespace fbg
 
     void Game::StartNewGame()
     {
-        m_Grid.fill(std::array<std::optional<Segment>, 20>());
+        m_PlacedSegs.fill(std::array<std::optional<Segment>, 10>());
         SpawnNewBlock(4, 18);
     }
 
     bool Game::SpawnNewBlock(int x, int y)
     {
-        // Spawn a new block at the top of the board
+        // TODO: Spawn a new block at the top of the board
         // Randomly pick from a new block to spawn
         // Check if the block will be able to spawn
         // If it can, spawn the block and return true
         // If it cannot, return false, which should finish the game
 
-        // playerBlock = std::make_unique<TBlock>(glm::vec3(
-        //     k_BlockBoardOrigin.x + k_UnitSize * 4.0f,
-        //     k_BlockBoardOrigin.y + k_UnitSize * 6.0f,
-        //     0.2f
-        // ));
+        m_ElapsedTime = 0.0f;
 
         auto randomBlock = pxl::Random::UInt(1, 7);
 
@@ -210,10 +234,9 @@ namespace fbg
         for (auto& segment : playerBlock->GetSegments())
         {
             auto gridPos = segment.GetGridPosition();
-            if (m_Grid[gridPos.x][gridPos.y].has_value())
-            {
+
+            if (m_PlacedSegs[gridPos.y][gridPos.x].has_value())
                 return false;
-            }
         }
 
         return true;
@@ -224,10 +247,9 @@ namespace fbg
         if (gridPos.y <= 0)
             return false;
 
-        if (m_Grid[gridPos.x][gridPos.y - 1].has_value())
-        {
+        if (m_PlacedSegs[gridPos.y - 1][gridPos.x].has_value())
             return false;
-        }
+        
 
         return true;
     }
@@ -237,10 +259,8 @@ namespace fbg
         if (gridPos.x <= 0)
             return false;
 
-        if (m_Grid[gridPos.x - 1][gridPos.y].has_value())
-        {
+        if (m_PlacedSegs[gridPos.y][gridPos.x - 1].has_value())
             return false;
-        }
 
         return true;
     }
@@ -251,73 +271,55 @@ namespace fbg
         if (gridPos.x >= 9)
             return false;
 
-        if (m_Grid[gridPos.x + 1][gridPos.y].has_value())
-        {
+        if (m_PlacedSegs[gridPos.y][gridPos.x + 1].has_value())
             return false;
-        }
 
         return true;
     }
 
     void Game::PlacePlayerBlock()
     {
+        // Place block
         for (const auto& segment : playerBlock->GetSegments())
         {
             auto segmentGridPos = segment.GetGridPosition();
-            m_Grid[segmentGridPos.x][segmentGridPos.y] = segment;
+            m_PlacedSegs[segmentGridPos.y][segmentGridPos.x] = segment;
         }
 
-        // for (const auto& segment : playerBlock->GetSegments())
-        // {
-        //     auto segmentRow = segment.GetGridPosition().y;
+        auto rows = sizeof(m_PlacedSegs) / sizeof(m_PlacedSegs[0]);
+        auto columns = sizeof(m_PlacedSegs[0]) / sizeof(m_PlacedSegs[0][0]);
 
-        //     int columns = sizeof(m_Grid) / sizeof(m_Grid[0]);
-
-        //     int blocksInRow = 0;
-        //     for (int column = 0; column < columns; column++)
-        //     {
-        //         if (m_Grid[segmentRow][column].has_value())
-        //         {
-        //             blocksInRow++;
-        //         }
-        //         else
-        //         {
-        //             break;
-        //         }
-        //     }
-
-        //     if (blocksInRow == 10)
-        //     {
-        //         for (int column = 0; column < columns; column++)
-        //         {
-        //             m_Grid[segmentRow][column] = std::optional<Segment>();
-        //         }
-        //     }
-        // }
-
-                // TODO: I need to reunderstand the rows and columns of the multidimensional array
-        // Check placed object rows
-
-#if 0
-        int rows = sizeof(m_Grid[0]) / sizeof(m_Grid[0][0]);
-        int columns = sizeof(m_Grid) / sizeof(m_Grid[0]);
-
-        for (int row = 0; row < rows; row++)
+        // Check for completed lines
+        // TODO: size_t instead of int32_t on rows breaks the for loop (need to investigate)
+        for (int32_t row = rows - 1; row >= 0; row--)
         {
-            int columnsFilled = 0;
-            for (int column = 0; column < columns; column++)
+            uint32_t segsInRow = 0;
+            for (size_t column = 0; column < columns; column++)
             {
-                if (m_Grid[row][column].has_value())
-                    columnsFilled++;
+                if (m_PlacedSegs[row][column].has_value())
+                    segsInRow++;
             }
 
-            if (columnsFilled == 10)
+            if (segsInRow >= 10)
             {
-                // A line has been complete!
-                // m_Grid[row].fill(std::array<std::optional<Segment>, 10>());
+                // Clear the line
+                m_PlacedSegs[row].fill(std::optional<Segment>());
+
+                // Move above lines down
+                for (size_t aboveRow = row; aboveRow < rows; aboveRow++)
+                {
+                    if (aboveRow == 19)
+                        break;
+
+                    m_PlacedSegs[aboveRow] = m_PlacedSegs[aboveRow + 1];
+
+                    for (auto& segment : m_PlacedSegs[aboveRow])
+                    {
+                        if (segment.has_value())
+                            segment->Translate({ 0, -1 });
+                    }
+                }
             }
         }
-
-#endif
     }
 }
