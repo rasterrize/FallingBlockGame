@@ -3,8 +3,9 @@
 namespace fbg
 {
     Block::Block(const glm::vec2& boardOrigin, const glm::ivec2& gridPos, const glm::vec4& colour)
-        : m_Position({ boardOrigin.x + k_UnitSize * gridPos.x, boardOrigin.y + k_UnitSize * gridPos.y, 0.2f }), m_GridPosition(gridPos), m_Colour(colour)
+        : m_GridPosition(gridPos), m_Colour(colour), m_BoardOrigin(boardOrigin)
     {
+        UpdatePosition();
     }
 
     void Block::Draw()
@@ -39,5 +40,18 @@ namespace fbg
     void Block::MoveRight()
     {
         Translate({ 1, 0 });
+    }
+
+    void Block::RotateLeft()
+    {
+        // for (auto& segment : m_Segments)
+        // {
+        //     segment.SetGrid
+        // }
+    }
+
+    void Block::UpdatePosition()
+    {
+        m_Position = { m_BoardOrigin.x + k_UnitSize * m_GridPosition.x, m_BoardOrigin.y + k_UnitSize * m_GridPosition.y, 0.2f };
     }
 }

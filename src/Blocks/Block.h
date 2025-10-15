@@ -17,10 +17,12 @@ namespace fbg
 
         void Draw();
 
-        glm::vec3 GetPosition() const { return m_Position; }
-        void SetPosition(const glm::vec3& pos) { m_Position = pos; }
-
         glm::ivec2 GetGridPosition() const { return m_GridPosition; }
+        void SetGridPosition(const glm::ivec2& pos)
+        {
+            m_GridPosition = pos;
+            UpdatePosition();
+        }
 
         std::array<Segment, 4> GetSegments() const { return m_Segments; }
 
@@ -30,6 +32,15 @@ namespace fbg
         void MoveLeft();
         void MoveRight();
 
+        virtual void RotateLeft();
+        // virtual void RotateRight();
+        // virtual void Rotate180();
+
+    protected:
+        void UpdatePosition();
+
+        virtual void InitSegments() = 0;
+
     protected:
         glm::vec3 m_Position;
 
@@ -38,5 +49,7 @@ namespace fbg
         glm::vec4 m_Colour;
 
         std::array<Segment, 4> m_Segments = std::array<Segment, 4>();
+
+        glm::vec2 m_BoardOrigin;
     };
 }

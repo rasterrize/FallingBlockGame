@@ -10,17 +10,22 @@ namespace fbg
         SBlock(const glm::vec2& boardOrigin, const glm::ivec2& gridPos)
             : Block(boardOrigin, gridPos, pxl::Colour::AsVec4(pxl::ColourName::Green))
         {
+            InitSegments();
+        }
+
+        virtual void InitSegments() override
+        {
             // Top Right
-            m_Segments[0] = Segment(boardOrigin, k_UnitSize, { gridPos.x + 1, gridPos.y + 1 }, m_Colour);
+            m_Segments[0] = Segment(m_BoardOrigin, k_UnitSize, { m_GridPosition.x + 1, m_GridPosition.y + 1 }, m_Colour);
 
             // Top
-            m_Segments[1] = Segment(boardOrigin, k_UnitSize, { gridPos.x, gridPos.y + 1 }, m_Colour);
+            m_Segments[1] = Segment(m_BoardOrigin, k_UnitSize, { m_GridPosition.x, m_GridPosition.y + 1 }, m_Colour);
 
             // Bottom
-            m_Segments[2] = Segment(boardOrigin, k_UnitSize, gridPos, m_Colour);
+            m_Segments[2] = Segment(m_BoardOrigin, k_UnitSize, m_GridPosition, m_Colour);
 
             // Bottom Left
-            m_Segments[3] = Segment(boardOrigin, k_UnitSize, { gridPos.x - 1, gridPos.y }, m_Colour);
+            m_Segments[3] = Segment(m_BoardOrigin, k_UnitSize, { m_GridPosition.x - 1, m_GridPosition.y }, m_Colour);
         }
     };
 }
