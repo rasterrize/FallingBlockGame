@@ -4,7 +4,7 @@
 
 #include <glm/glm.hpp>
 
-#include "Segment.h"
+#include "../Segment.h"
 
 namespace fbg
 {

@@ -1,6 +1,6 @@
 #include "Game.h"
 
-#include "Blocks.h"
+#include "Blocks/Blocks.h"
 
 namespace fbg
 {
@@ -42,9 +42,9 @@ namespace fbg
         m_BoardTexture = pxl::Texture::Create(boardImage, textureSpecs);
         m_GridTexture = pxl::Texture::Create(gridImage, textureSpecs);
 
-        pxl::GUI::Init(window);
+        // pxl::GUI::Init(window);
 
-        StartGame();
+        StartNewGame();
     }
 
     Game::~Game()
@@ -95,6 +95,11 @@ namespace fbg
             m_FallTime = 0.4f;
         }
 
+        if (pxl::Input::IsKeyPressed(pxl::KeyCode::PXL_KEY_R))
+        {
+            StartNewGame();
+        }
+
         if (m_ElapsedTime > m_FallTime)
         {
             for (const auto& segment : playerBlock->GetSegments())
@@ -105,8 +110,7 @@ namespace fbg
                     PlacePlayerBlock();
                     if (!SpawnNewBlock(4, 18))
                     {
-                        Close();
-                        return;
+                        StartNewGame();
                     }
 
                     return;
@@ -158,20 +162,21 @@ namespace fbg
 
     void Game::OnGUIRender()
     {
-        ImGui::Begin("Falling Block Game Debug");
+        // ImGui::Begin("Falling Block Game Debug");
 
-        ImGui::Text("%f, %f", playerBlock->GetPosition().x, playerBlock->GetPosition().y);
-        ImGui::Text("%d, %d", playerBlock->GetGridPosition().x, playerBlock->GetGridPosition().y);
+        // ImGui::Text("%f, %f", playerBlock->GetPosition().x, playerBlock->GetPosition().y);
+        // ImGui::Text("%d, %d", playerBlock->GetGridPosition().x, playerBlock->GetGridPosition().y);
 
-        ImGui::End();
+        // ImGui::End();
     }
 
     void Game::OnClose()
     {
     }
 
-    void Game::StartGame()
+    void Game::StartNewGame()
     {
+        m_Grid.fill(std::array<std::optional<Segment>, 20>());
         SpawnNewBlock(4, 18);
     }
 
@@ -189,24 +194,18 @@ namespace fbg
         //     0.2f
         // ));
 
-        auto randomBlock = pxl::Random::Float(0.0f, 1.0f);
+        auto randomBlock = pxl::Random::UInt(1, 7);
 
-        // if (randomBlock > 0.5f)
-        // {
-        //     playerBlock = std::make_unique<TBlock>(k_BlockBoardOrigin, glm::ivec2(x, y));
-        // }
-        // else
-        // {
-        //     playerBlock = std::make_unique<IBlock>(k_BlockBoardOrigin, glm::ivec2(x, y));
-        // }
-
-        playerBlock = std::make_unique<ZBlock>(k_BlockBoardOrigin, glm::ivec2(x, y));
-
-        // switch (randomBlock)
-        // {
-        //     case 1: playerBlock = std::make_unique<TBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
-        //     case 2: playerBlock = std::make_unique<IBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
-        // }
+        switch (randomBlock)
+        {
+            case 1: playerBlock = std::make_unique<TBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
+            case 2: playerBlock = std::make_unique<IBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
+            case 3: playerBlock = std::make_unique<ZBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
+            case 4: playerBlock = std::make_unique<SBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
+            case 5: playerBlock = std::make_unique<OBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
+            case 6: playerBlock = std::make_unique<LBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
+            case 7: playerBlock = std::make_unique<JBlock>(k_BlockBoardOrigin, glm::ivec2(x, y)); break;
+        }
 
         for (auto& segment : playerBlock->GetSegments())
         {
@@ -268,8 +267,36 @@ namespace fbg
             m_Grid[segmentGridPos.x][segmentGridPos.y] = segment;
         }
 
-        // TODO: I need to reunderstand the rows and columns of the multidimensional array
-        // Check each row for a full line
+        // for (const auto& segment : playerBlock->GetSegments())
+        // {
+        //     auto segmentRow = segment.GetGridPosition().y;
+
+        //     int columns = sizeof(m_Grid) / sizeof(m_Grid[0]);
+
+        //     int blocksInRow = 0;
+        //     for (int column = 0; column < columns; column++)
+        //     {
+        //         if (m_Grid[segmentRow][column].has_value())
+        //         {
+        //             blocksInRow++;
+        //         }
+        //         else
+        //         {
+        //             break;
+        //         }
+        //     }
+
+        //     if (blocksInRow == 10)
+        //     {
+        //         for (int column = 0; column < columns; column++)
+        //         {
+        //             m_Grid[segmentRow][column] = std::optional<Segment>();
+        //         }
+        //     }
+        // }
+
+                // TODO: I need to reunderstand the rows and columns of the multidimensional array
+        // Check placed object rows
 
 #if 0
         int rows = sizeof(m_Grid[0]) / sizeof(m_Grid[0][0]);

@@ -2,7 +2,7 @@
 
 #include <pxl/pxl.h>
 
-#include "Block.h"
+#include "Blocks/Block.h"
 
 namespace fbg
 {
@@ -18,7 +18,7 @@ namespace fbg
         void OnClose();
 
     private:
-        void StartGame();
+        void StartNewGame();
 
         bool SpawnNewBlock(int x, int y);
 

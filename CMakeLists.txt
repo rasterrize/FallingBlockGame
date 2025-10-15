@@ -5,14 +5,18 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/Game.h
     src/Game.cpp
-    src/Block.h
-    src/Block.cpp
-    src/TBlock.h
-    src/IBlock.h
-    src/ZBlock.h
+    src/Blocks/Block.h
+    src/Blocks/Block.cpp
+    src/Blocks/TBlock.h
+    src/Blocks/IBlock.h
+    src/Blocks/ZBlock.h
+    src/Blocks/SBlock.h
+    src/Blocks/OBlock.h
+    src/Blocks/LBlock.h
+    src/Blocks/JBlock.h
+    src/Blocks/Blocks.h
     src/Segment.h
     src/Segment.cpp
-    src/Blocks.h
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
