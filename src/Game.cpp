@@ -353,6 +353,7 @@ namespace fbg
         m_BlockBag.clear();
 
         m_PlayerBlock = GenerateRandomBlock(4, 18);
+        m_HeldBlock = nullptr;
 
         for (int i = 0; i < 5; i++)
             m_BlockBag.push_back(GenerateRandomBlock(4, 18));
