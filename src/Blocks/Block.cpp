@@ -18,13 +18,7 @@ namespace fbg
 
     void Block::Translate(const glm::ivec2& translate)
     {
-        m_GridPosition += translate;
-
-        m_Position.x += translate.x * k_UnitSize;
-        m_Position.y += translate.y * k_UnitSize;
-
-        for (auto& segment : m_Segments)
-            segment.Translate(translate);
+        SetGridPosition(m_GridPosition + translate);
     }
 
     void Block::MoveDown()
@@ -42,16 +36,18 @@ namespace fbg
         Translate({ 1, 0 });
     }
 
-    void Block::RotateLeft()
-    {
-        // for (auto& segment : m_Segments)
-        // {
-        //     segment.SetGrid
-        // }
-    }
-
     void Block::UpdatePosition()
     {
         m_Position = { m_BoardOrigin.x + k_UnitSize * m_GridPosition.x, m_BoardOrigin.y + k_UnitSize * m_GridPosition.y, 0.2f };
+
+        UpdateSegments();
+    }
+
+    void Block::UpdateSegments()
+    {
+        for (int segmentIndex = 0; segmentIndex < m_Segments.size(); segmentIndex++)
+        {
+            m_Segments[segmentIndex].SetGridPosition({ m_GridPosition.x + m_Rotations[m_RotationIndex][segmentIndex].x, m_GridPosition.y + m_Rotations[m_RotationIndex][segmentIndex].y });
+        }
     }
 }

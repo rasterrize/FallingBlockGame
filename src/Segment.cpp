@@ -8,7 +8,7 @@ namespace fbg
     }
 
     Segment::Segment(const glm::vec2& boardOrigin, float unitSize, const glm::ivec2& gridPos, const glm::vec4& colour)
-        : m_GridPosition(gridPos), m_UnitSize(unitSize)
+        : m_GridPosition(gridPos), m_UnitSize(unitSize), m_BoardOrigin(boardOrigin)
     {
         m_DrawQuad = {};
         // TODO: z should be the block's Z
@@ -16,6 +16,14 @@ namespace fbg
         m_DrawQuad.Colour = colour;
         m_DrawQuad.Size = glm::vec2(m_UnitSize);
         m_DrawQuad.Origin = pxl::Origin2D::BottomLeft;
+    }
+
+    void Segment::SetGridPosition(const glm::ivec2& pos)
+    {
+        m_GridPosition = pos;
+
+        // TODO: update pos function?
+        m_DrawQuad.Position = { m_BoardOrigin.x + m_UnitSize * pos.x, m_BoardOrigin.y + m_UnitSize * pos.y, 0.2f };
     }
 
     void Segment::Translate(const glm::ivec2& translate)

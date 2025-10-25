@@ -10,6 +10,14 @@ namespace fbg
         OBlock(const glm::vec2& boardOrigin, const glm::ivec2& gridPos)
             : Block(boardOrigin, gridPos, pxl::Colour::AsVec4(pxl::ColourName::Yellow))
         {
+            for (auto& rotation : m_Rotations)
+            {
+                rotation[0] = { 0, 0 };
+                rotation[1] = { 0, 1 };
+                rotation[2] = { 1, 1 };
+                rotation[3] = { 1, 0 };
+            }
+
             InitSegments();
         }
 

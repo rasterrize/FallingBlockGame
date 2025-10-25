@@ -10,6 +10,31 @@ namespace fbg
         ZBlock(const glm::vec2& boardOrigin, const glm::ivec2& gridPos)
             : Block(boardOrigin, gridPos, pxl::Colour::AsVec4(pxl::ColourName::Red))
         {
+            // Init rotation positions
+            // up
+            m_Rotations[0][0] = { -1, 1 };
+            m_Rotations[0][1] = { 0, 1 };
+            m_Rotations[0][2] = { 0, 0 };
+            m_Rotations[0][3] = { 1, 0 };
+
+            // right
+            m_Rotations[1][0] = { 1, 1 };
+            m_Rotations[1][1] = { 1, 0 };
+            m_Rotations[1][2] = { 0, 0 };
+            m_Rotations[1][3] = { 0, -1 };
+
+            // down
+            m_Rotations[2][0] = { 1, -1 };
+            m_Rotations[2][1] = { 0, -1 };
+            m_Rotations[2][2] = { 0, 0 };
+            m_Rotations[2][3] = { -1, 0 };
+
+            // left
+            m_Rotations[3][0] = { -1, -1 };
+            m_Rotations[3][1] = { -1, 0 };
+            m_Rotations[3][2] = { 0, 0 };
+            m_Rotations[3][3] = { 0, 1 };
+
             InitSegments();
         }
 

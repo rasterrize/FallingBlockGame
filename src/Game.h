@@ -20,13 +20,21 @@ namespace fbg
     private:
         void StartNewGame();
 
-        bool SpawnNewBlock(int x, int y);
+        std::unique_ptr<Block> GenerateRandomBlock(int x, int y);
 
-        bool CheckBelowSegment(const glm::ivec2& gridPos);
-        bool CheckLeftSegment(const glm::ivec2& gridPos);
-        bool CheckRightSegment(const glm::ivec2& gridPos);
+        bool IsEmptyBelow(const glm::ivec2& gridPos);
+        bool IsEmptyLeft(const glm::ivec2& gridPos);
+        bool IsEmptyRight(const glm::ivec2& gridPos);
 
         void PlacePlayerBlock();
+
+        void CheckBoundsAndMove();
+
+        void NextPlayerBlock();
+
+        bool CanPlacePlayerBlock();
+
+        void SetupHologram();
 
     private:
         std::shared_ptr<pxl::Texture> m_BoardTexture;
@@ -39,10 +47,19 @@ namespace fbg
         std::array<std::array<std::optional<Segment>, 10>, 20> m_PlacedSegs;
 
         // Time it takes for a block to fall to the next line
-        float m_FallTime = k_DefaultFallTime;
+        float m_FallTimeSetting = k_DefaultFallTime;
+        float m_CurrentFallTime = 0.0f;
         float m_ElapsedTime = 0.0f;
 
-        std::unique_ptr<Block> playerBlock;
-        std::unique_ptr<Block> hologramBlock;
+        float m_SoftDropSpeed = 3.0f;
+
+        bool m_PlayerCanHold = true;
+
+        std::unique_ptr<Block> m_PlayerBlock;
+        std::unique_ptr<Block> m_HeldBlock;
+
+        std::array<Segment, 4> m_HologramSegments;
+
+        std::vector<std::unique_ptr<Block>> m_BlockBag;
     };
 }

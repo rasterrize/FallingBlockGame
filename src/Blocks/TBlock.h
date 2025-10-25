@@ -8,8 +8,33 @@ namespace fbg
     {
     public:
         TBlock(const glm::vec2& boardOrigin, const glm::ivec2& gridPos)
-            : Block(boardOrigin, gridPos, glm::vec4(173.0f / 255.0f, 66 / 255.0f, 245 / 255.0f, 1.0f))
+            : Block(boardOrigin, gridPos, glm::vec4(173.0f / 255.0f, 66.0f / 255.0f, 245.0f / 255.0f, 1.0f))
         {
+            // Init rotation positions
+            // up
+            m_Rotations[0][0] = { -1, 0 };
+            m_Rotations[0][1] = { 0, 0 }; // will always be 0, 0
+            m_Rotations[0][2] = { 1, 0 };
+            m_Rotations[0][3] = { 0, 1 };
+
+            // right
+            m_Rotations[1][0] = { 0, 1 };
+            m_Rotations[1][1] = { 0, 0 }; // will always be 0, 0
+            m_Rotations[1][2] = { 0, -1 };
+            m_Rotations[1][3] = { 1, 0 };
+
+            // down
+            m_Rotations[2][0] = { 1, 0 };
+            m_Rotations[2][1] = { 0, 0 }; // will always be 0, 0
+            m_Rotations[2][2] = { -1, 0 };
+            m_Rotations[2][3] = { 0, -1 };
+
+            // left
+            m_Rotations[3][0] = { 0, -1 };
+            m_Rotations[3][1] = { 0, 0 }; // will always be 0, 0
+            m_Rotations[3][2] = { 0, 1 };
+            m_Rotations[3][3] = { -1, 0 };
+
             InitSegments();
         }
 
